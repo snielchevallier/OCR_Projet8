@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* Couleurs — génère text-main-red, bg-dark-orange, etc. */
+  --color-main-red: #99331A;
+  --color-dark-orange: #842C16;
+  --color-light-orange: #FFFBF9;
+  --color-black: #0D0D0D;
+  --color-white: #FFFFFF;
+  --color-grey-light: #F5F5F5;
+  --color-grey-dark: #565656;
+
+  /* Police */
+  --font-sans: var(--font-inter);
+}
+
+body {
+  font-family: var(--font-sans), sans-serif;
+}
