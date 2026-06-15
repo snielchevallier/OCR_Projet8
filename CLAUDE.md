@@ -34,3 +34,8 @@ Ces règles s'appliquent à tout HTML/JSX généré.
 ## Tailwind
 - Préférer les variantes `focus-visible:` à `focus:` pour les styles de focus
 - Utiliser `sr-only` pour le texte réservé aux lecteurs d'écran
+
+
+## Intégration
+- Toujours prévoir les versions mobile, tablette et desktop.
+- Utiliser au maximum les couleurs définies dans globals.css
