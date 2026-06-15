@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
-
 
 export const metadata: Metadata = {
   title: "Kasa",
@@ -19,14 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <div className="flex flex-col flex-1 items-center justify-center bg-light-orange font-sans dark:bg-black">
-          {children}
-        </div>
+    <html lang="fr" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-light-orange font-sans">
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
   );
