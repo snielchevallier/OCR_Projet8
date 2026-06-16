@@ -7,13 +7,12 @@ type Props = {
 
 export default function PropertyGrid({ properties }: Props) {
   return (
-    <div className="border border-dashed border-grey-dark p-4">
-      <span className="text-sm text-grey-dark">Je suis la PropertyGrid ({properties.length} annonces)</span>
-      <div className="mt-2 flex flex-col gap-2">
+    <section aria-label="Liste des logements" className="px-4 md:px-8 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((p) => (
           <PropertyCard key={p.id} property={p} />
         ))}
       </div>
-    </div>
+    </section>
   )
 }
