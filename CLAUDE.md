@@ -39,3 +39,17 @@ Ces règles s'appliquent à tout HTML/JSX généré.
 ## Intégration
 - Toujours prévoir les versions mobile, tablette et desktop.
 - Utiliser au maximum les couleurs définies dans globals.css
+
+# Documentation JSDoc
+
+Ajouter un commentaire JSDoc uniquement si au moins une de ces conditions est vraie :
+- Le comportement n'est **pas évident** depuis le nom seul (effet de bord, convention, cas limite)
+- La fonction a des **paramètres non triviaux** (format attendu, valeurs acceptées, optionnels)
+- La fonction peut **lever une erreur** ou retourner `null`/`undefined` dans certains cas
+
+Ne jamais documenter :
+- Ce que fait le code (les noms suffisent)
+- Les composants de page simples sans logique propre
+- Les props dont le type TypeScript est déjà explicite
+
+Format minimal : `@param`, `@returns`, `@throws` seulement si utiles. Pas de `@description` verbeux.

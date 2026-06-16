@@ -5,6 +5,7 @@ type Variant = "primary" | "secondary" | "ghost"
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant
+  /** Si fourni, rend un `<Link>` Next.js au lieu d'un `<button>`. Les props HTML button sont alors ignorées. */
   href?: string
 }
 

@@ -7,6 +7,7 @@ type Props = {
   children: ReactNode
 }
 
+// TODO: focus trap, fermeture sur Escape (useEffect + keydown), animation ouverture/fermeture
 export default function Modal({ isOpen, onClose, title, children }: Props) {
   if (!isOpen) return null
 

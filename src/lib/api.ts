@@ -7,6 +7,7 @@ type ApiOptions = {
   body?: unknown
 }
 
+/** Erreur HTTP avec le status code associé. */
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -17,6 +18,13 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Appelle l'API backend avec le token JWT du cookie `token` si présent.
+ * @param endpoint - Chemin relatif ex. `"/api/properties"`
+ * @param options - Méthode HTTP et corps de la requête
+ * @returns Les données JSON typées `T`
+ * @throws {ApiError} 401 si session expirée, 503 si serveur inaccessible, autre status HTTP sinon
+ */
 export async function apiFetch<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')?.value

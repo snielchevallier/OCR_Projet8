@@ -15,6 +15,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
 
+  /** `token` est destiné au cookie (httpOnly via Server Action), `user` au state React. */
   function login(token: string, user: User) {
     // TODO: stocker le token dans un cookie + mettre à jour le state
     setUser(user)
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
+/** @throws {Error} Si appelé en dehors d'un `AuthProvider` */
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error("useAuth doit être utilisé dans un AuthProvider")

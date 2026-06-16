@@ -23,6 +23,7 @@ type Props = {
 }
 
 export default function PropertyCard({ property }: Props) {
+  // État local uniquement — non synchronisé avec le backend (TODO: brancher FavoriteButton)
   const [favorited, setFavorited] = useState(false)
 
   return (
