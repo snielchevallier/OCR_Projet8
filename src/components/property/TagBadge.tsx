@@ -4,8 +4,10 @@ type Props = {
 
 export default function TagBadge({ label }: Props) {
   return (
-    <span className="border border-dashed border-grey-dark px-2 py-1 text-xs text-grey-dark">
-      Je suis un TagBadge — {label}
+    <span className="inline-block rounded-lg bg-grey-light 
+    px-4 py-2 
+    text-sm text-black">
+      {label}
     </span>
   )
 }

@@ -10,10 +10,9 @@ async function PropertyGridStream() {
   return <PropertyGrid properties={properties} />
 }
 
-export default function HomePage() {
+export default function Logements() {
   return (
     <main>
-      <HeroSection />
       <Suspense fallback={
         <div className="flex justify-center py-16">
           <Spinner size="lg" />
@@ -21,7 +20,6 @@ export default function HomePage() {
       }>
         <PropertyGridStream />
       </Suspense>
-      <HowItWorks />
     </main>
   )
 }

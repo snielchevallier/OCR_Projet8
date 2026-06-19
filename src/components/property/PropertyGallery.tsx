@@ -1,3 +1,7 @@
+"use client"
+
+import Image from "next/image"
+
 type Props = {
   pictures: string[]
   cover: string
@@ -5,11 +9,93 @@ type Props = {
 }
 
 export default function PropertyGallery({ pictures, cover, title }: Props) {
+  const smallImages = pictures.filter((p) => p !== cover).slice(0, 4)
+
   return (
-    <div className="border border-dashed border-grey-dark p-4">
-      <span className="text-sm text-grey-dark">
-        Je suis la PropertyGallery (mosaïque) — {pictures.length + 1} images pour &quot;{title}&quot;
-      </span>
-    </div>
+    <>
+      {/* Desktop — mosaïque 3 colonnes */}
+      <div className="hidden lg:grid lg:h-100 lg:grid-cols-[2fr_1fr_1fr] lg:grid-rows-2 lg:gap-2 lg:overflow-hidden ">
+        <button
+          type="button"
+          className="relative row-span-2 overflow-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-main-red"
+          aria-label={`Voir toutes les photos de ${title}`}
+        >
+          <Image
+            src={cover}
+            alt={`Photo principale de ${title}`}
+            fill
+            className="object-cover transition-transform duration-300 hover:scale-105 lg:rounded-2xl"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            priority
+          />
+        </button>
+
+        {Array.from({ length: 4 }).map((_, i) => {
+          const img = smallImages[i]
+          return img ? (
+            <button
+              key={img}
+              type="button"
+              className="relative overflow-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-main-red lg:rounded-2xl"
+              aria-label={`Voir la photo ${i + 2} de ${title}`}
+            >
+              <Image
+                src={img}
+                alt={`Photo ${i + 2} de ${title}`}
+                fill
+                className="object-cover transition-transform duration-300 hover:scale-105"
+                sizes="(min-width: 1024px) 25vw, 50vw"
+              />
+            </button>
+          ) : (
+            <div key={i} className="bg-grey-light" aria-hidden="true" />
+          )
+        })}
+      </div>
+
+      {/* Mobile — cover large + rangée de thumbnails */}
+      <div className="lg:hidden">
+        <button
+          type="button"
+          className="relative block h-70 w-full overflow-hidden rounded-xl focus-visible:ring-2 focus-visible:ring-main-red focus-visible:ring-offset-2"
+          aria-label={`Voir toutes les photos de ${title}`}
+        >
+          <Image
+            src={cover}
+            alt={`Photo principale de ${title}`}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+        </button>
+
+        {smallImages.length > 0 && (
+          <div className="mt-2 grid h-20 grid-cols-4 gap-2">
+            {Array.from({ length: 4 }).map((_, i) => {
+              const img = smallImages[i]
+              return img ? (
+                <button
+                  key={img}
+                  type="button"
+                  className="relative overflow-hidden rounded-lg focus-visible:ring-2 focus-visible:ring-main-red focus-visible:ring-offset-1"
+                  aria-label={`Voir la photo ${i + 2} de ${title}`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Photo ${i + 2} de ${title}`}
+                    fill
+                    className="object-cover"
+                    sizes="25vw"
+                  />
+                </button>
+              ) : (
+                <div key={i} className="rounded-lg bg-grey-light" aria-hidden="true" />
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </>
   )
 }

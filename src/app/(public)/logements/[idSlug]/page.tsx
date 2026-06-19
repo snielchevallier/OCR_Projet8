@@ -1,6 +1,8 @@
+import Link from "next/link"
 import PropertyGallery from "@/components/property/PropertyGallery"
 import HostCard from "@/components/property/HostCard"
 import TagBadge from "@/components/property/TagBadge"
+import { getProperty } from "@/actions/properties"
 
 type Props = {
   params: Promise<{ idSlug: string }>
@@ -8,30 +10,93 @@ type Props = {
 
 export default async function PropertyDetailPage({ params }: Props) {
   const { idSlug } = await params
-  // TODO: extraire l'id → idSlug.split('--')[0], puis appeler getProperty(id)
+  const id = idSlug.split("--")[0]
+  const property = await getProperty(id)
 
   return (
-    <main className="p-8">
-      <p className="text-sm text-grey-dark">← Retour aux annonces</p>
-      <p className="mt-4 text-sm text-grey-dark">Je suis la page Détail logement — param: {idSlug}</p>
-
-      <div className="mt-4 border border-dashed border-grey-dark p-4">
-        <PropertyGallery pictures={[]} cover="" title={idSlug} />
+    <main>
+      <div className="px-4 pt-6 sm:px-8">
+        <Link
+          href="/logements"
+          className="inline-flex items-center gap-2 rounded-xl bg-grey-light px-4 py-4 text-sm text-grey-dark transition-colors focus-visible:ring-1 focus-visible:ring-main-red"
+        >
+          <span aria-hidden="true">←</span>
+          Retour aux annonces
+        </Link>
       </div>
 
-      <div className="mt-4 grid grid-cols-[1fr_auto] gap-8">
-        <div className="border border-dashed border-grey-dark p-4">
-          <p className="text-sm text-grey-dark">Titre · Localisation · Description</p>
-          <div className="mt-2">
-            <p className="text-xs text-grey-dark">Équipements :</p>
-            <TagBadge label="Exemple équipement" />
+      <div className="mt-6 px-4 pb-16 sm:px-8">
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[1fr_360px] lg:items-start">
+
+          {/* Colonne principale : gallery + infos */}
+          <div className="flex flex-col gap-8">
+            <PropertyGallery
+              pictures={property.pictures}
+              cover={property.cover}
+              title={property.title}
+            />
+
+            <div className="flex flex-col gap-8 rounded-xl bg-white p-6 lg:p-8">
+              <div>
+                <h1 className="text-2xl font-bold text-black sm:text-3xl">{property.title}</h1>
+                <p className="mt-2 flex items-center gap-1.5 text-sm text-grey-dark">
+                  <svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {property.location}
+                </p>
+              </div>
+
+              <p className="text-base leading-relaxed text-black">{property.description}</p>
+
+              <section aria-labelledby="equipments-heading">
+                <h2 id="equipments-heading" className="mb-4 text-xl font-semibold text-black">
+                  Équipements
+                </h2>
+                <ul className="flex flex-wrap gap-3" aria-label="Liste des équipements">
+                  {property.equipments.map((equipment) => (
+                    <li key={equipment}>
+                      <TagBadge label={equipment} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section aria-labelledby="tags-heading">
+                <h2 id="tags-heading" className="mb-4 text-xl font-semibold text-black">
+                  Catégorie
+                </h2>
+                <ul className="flex flex-wrap gap-3" aria-label="Liste des catégories">
+                  {property.tags.map((tag) => (
+                    <li key={tag}>
+                      <TagBadge label={tag} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
           </div>
-          <div className="mt-2">
-            <p className="text-xs text-grey-dark">Catégorie :</p>
-            <TagBadge label="Exemple catégorie" />
+
+          {/* Colonne droite : HostCard sticky */}
+          <div className="lg:sticky lg:top-8">
+            <HostCard
+              host={property.host}
+              rating={Math.round(property.rating_avg)}
+            />
           </div>
+
         </div>
-        <HostCard host={{ id: 0, name: "Hôte debug", picture: null }} />
       </div>
     </main>
   )
