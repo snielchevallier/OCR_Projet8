@@ -11,14 +11,31 @@ type Props = {
   onClose: () => void
 }
 
+type Direction = "next" | "prev" | null
+
 export default function Carousel({ images, initialIndex, title, onClose }: Props) {
   const [current, setCurrent] = useState(initialIndex)
+  const [direction, setDirection] = useState<Direction>(null)
+  const [overlayVisible, setOverlayVisible] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const total = images.length
 
-  const prev = useCallback(() => setCurrent((i) => (i - 1 + total) % total), [total])
-  const next = useCallback(() => setCurrent((i) => (i + 1) % total), [total])
+  const prev = useCallback(() => {
+    setDirection("prev")
+    setCurrent((i) => (i - 1 + total) % total)
+  }, [total])
+
+  const next = useCallback(() => {
+    setDirection("next")
+    setCurrent((i) => (i + 1) % total)
+  }, [total])
+
+  // Fade-in de l'overlay au montage
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setOverlayVisible(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   // Focus le bouton fermer à l'ouverture
   useEffect(() => {
@@ -68,13 +85,18 @@ export default function Carousel({ images, initialIndex, title, onClose }: Props
     return () => dialog.removeEventListener("keydown", handleTab)
   }, [])
 
+  const slideClass =
+    direction === "next" ? "animate-slide-from-right"
+    : direction === "prev" ? "animate-slide-from-left"
+    : "animate-fade-in"
+
   return (
     <div
       ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={`Carrousel photos — ${title}`}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/92"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/92 transition-opacity duration-200 ${overlayVisible ? "opacity-100" : "opacity-0"}`}
     >
       {/* Bouton fermer */}
       <button
@@ -98,8 +120,11 @@ export default function Carousel({ images, initialIndex, title, onClose }: Props
         {current + 1} / {total}
       </p>
 
-      {/* Image courante */}
-      <div className="relative mx-auto h-[75vh] w-full max-w-5xl px-20">
+      {/* Image courante — key force le remontage pour rejouer l'animation */}
+      <div
+        key={current}
+        className={`relative mx-auto h-[75vh] w-full max-w-5xl px-20 ${slideClass}`}
+      >
         <Image
           src={images[current]}
           alt={`Photo ${current + 1} sur ${total} de ${title}`}
