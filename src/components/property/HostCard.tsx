@@ -1,5 +1,6 @@
 import Image from "next/image"
 import type { User } from "@/types/user"
+import { BLUR_PLACEHOLDER } from "@/lib/image"
 
 type Props = {
   host: Pick<User, "id" | "name" | "picture">
@@ -20,6 +21,8 @@ export default function HostCard({ host, rating }: Props) {
               fill
               className="object-cover"
               sizes="64px"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
             />
           ) : (
             <div className="size-full bg-grey-dark" aria-hidden="true" />

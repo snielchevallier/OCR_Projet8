@@ -4,6 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Property } from "@/types/property"
+import { BLUR_PLACEHOLDER } from "@/lib/image"
 
 function HeartIcon({ filled }: { filled: boolean }) {
   return (
@@ -49,6 +50,8 @@ export default function PropertyCard({ property }: Props) {
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 355px"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDER}
           />
         </div>
 

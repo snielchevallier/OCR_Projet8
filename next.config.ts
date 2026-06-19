@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
         hostname: "s3-eu-west-1.amazonaws.com",
       },
     ],
+    minimumCacheTTL: 86400,
   },
 };
 
