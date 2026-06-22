@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Property } from "@/types/property"
 import { BLUR_PLACEHOLDER } from "@/lib/image"
+import { useFavorites } from "@/context/FavoritesContext"
 
 function HeartIcon({ filled }: { filled: boolean }) {
   return (
@@ -24,8 +24,8 @@ type Props = {
 }
 
 export default function PropertyCard({ property }: Props) {
-  // État local uniquement — non synchronisé avec le backend (TODO: brancher FavoriteButton)
-  const [favorited, setFavorited] = useState(false)
+  const { isFavorite, toggle } = useFavorites()
+  const favorited = isFavorite(property.id)
 
   return (
     <article className="relative h-138 rounded-2xl overflow-hidden bg-white">
@@ -33,7 +33,7 @@ export default function PropertyCard({ property }: Props) {
         type="button"
         aria-label={favorited ? "Retirer des favoris" : "Ajouter aux favoris"}
         aria-pressed={favorited}
-        onClick={() => setFavorited((f) => !f)}
+        onClick={() => toggle(property.id)}
         className="absolute top-3 right-3 z-10 w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red cursor-pointer"
       >
         <HeartIcon filled={favorited} />
