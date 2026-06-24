@@ -2,6 +2,13 @@ import { cookies } from 'next/headers'
 import { apiFetch } from './api'
 import type { User } from '@/types/user'
 
+export async function registerWithCredentials(name: string, email: string, password: string) {
+  return apiFetch<{ token: string; user: User }>('/auth/register', {
+    method: 'POST',
+    body: { name, email, password },
+  })
+}
+
 export async function loginWithCredentials(email: string, password: string) {
   return apiFetch<{ token: string; user: User }>('/auth/login', {
     method: 'POST',

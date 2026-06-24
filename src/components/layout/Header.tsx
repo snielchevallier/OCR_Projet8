@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
+import { logoutUser } from "@/actions/auth"
+import Modal from "@/components/ui/Modal"
 
 function FavIcon() {
   return (
@@ -34,7 +37,9 @@ function ChatIcon() {
 function MenuIcon() {
   return (
     <svg width="29" height="21" viewBox="0 0 29 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M7.16888 1.43378C7.16888 0.641951 7.81084 0 8.60266 0H27.2418C28.0336 0 28.6755 0.641951 28.6755 1.43378C28.6755 2.2256 28.0336 2.86755 27.2418 2.86755H8.60266C7.81084 2.86755 7.16888 2.22555 7.16888 1.43378ZM27.2418 8.60266H1.43378C0.641951 8.60266 0 9.24467 0 10.0364C0 10.8283 0.641951 11.4702 1.43378 11.4702H27.2418C28.0336 11.4702 28.6755 10.8283 28.6755 10.0364C28.6755 9.24467 28.0336 8.60266 27.2418 8.60266ZM27.2418 17.2053H14.3378C13.546 17.2053 12.904 17.8473 12.904 18.6391C12.904 19.4309 13.546 20.0729 14.3378 20.0729H27.2418C28.0336 20.0729 28.6755 19.4309 28.6755 18.6391C28.6755 17.8473 28.0336 17.2053 27.2418 17.2053Z" fill="#565656"/>
+      <path 
+      d="M7.16888 1.43378C7.16888 0.641951 7.81084 0 8.60266 0H27.2418C28.0336 0 28.6755 0.641951 28.6755 1.43378C28.6755 2.2256 28.0336 2.86755 27.2418 2.86755H8.60266C7.81084 2.86755 7.16888 2.22555 7.16888 1.43378ZM27.2418 8.60266H1.43378C0.641951 8.60266 0 9.24467 0 10.0364C0 10.8283 0.641951 11.4702 1.43378 11.4702H27.2418C28.0336 11.4702 28.6755 10.8283 28.6755 10.0364C28.6755 9.24467 28.0336 8.60266 27.2418 8.60266ZM27.2418 17.2053H14.3378C13.546 17.2053 12.904 17.8473 12.904 18.6391C12.904 19.4309 13.546 20.0729 14.3378 20.0729H27.2418C28.0336 20.0729 28.6755 19.4309 28.6755 18.6391C28.6755 17.8473 28.0336 17.2053 27.2418 17.2053Z" 
+      fill="#565656"/>
     </svg>
   )
 }
@@ -42,7 +47,27 @@ function MenuIcon() {
 function CloseIcon() {
   return (
     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0.514359 0.511485C1.19634 -0.170495 2.30211 -0.170495 2.98409 0.511485L12.9177 10.4441L22.8513 0.515391C23.5333 -0.166589 24.639 -0.166589 25.321 0.515391C26.0027 1.19739 26.0029 2.30322 25.321 2.98512L15.3874 12.9138L25.32 22.8464C26.002 23.5284 26.0019 24.6342 25.32 25.3162C24.9771 25.6591 24.5295 25.8288 24.0856 25.8289C23.6377 25.8289 23.1933 25.6592 22.8503 25.3162L12.9177 15.3836L2.98116 25.3162C2.64218 25.6592 2.19373 25.8289 1.7458 25.8289C1.29797 25.8288 0.854366 25.6591 0.511429 25.3162C-0.170439 24.6342 -0.170514 23.5284 0.511429 22.8464L10.448 12.9138L0.514359 2.98024C-0.167046 2.29836 -0.167063 1.19335 0.514359 0.511485Z" fill="#0D0D0D"/>
+      <path 
+      d="M0.514359 0.511485C1.19634 -0.170495 2.30211 -0.170495 2.98409 0.511485L12.9177 10.4441L22.8513 0.515391C23.5333 -0.166589 24.639 -0.166589 25.321 0.515391C26.0027 1.19739 26.0029 2.30322 25.321 2.98512L15.3874 12.9138L25.32 22.8464C26.002 23.5284 26.0019 24.6342 25.32 25.3162C24.9771 25.6591 24.5295 25.8288 24.0856 25.8289C23.6377 25.8289 23.1933 25.6592 22.8503 25.3162L12.9177 15.3836L2.98116 25.3162C2.64218 25.6592 2.19373 25.8289 1.7458 25.8289C1.29797 25.8288 0.854366 25.6591 0.511429 25.3162C-0.170439 24.6342 -0.170514 23.5284 0.511429 22.8464L10.448 12.9138L0.514359 2.98024C-0.167046 2.29836 -0.167063 1.19335 0.514359 0.511485Z" 
+      fill="#0D0D0D"/>
+    </svg>
+  )
+}
+
+function LoginIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 2H12.6667C13.0203 2 13.3594 2.14048 13.6095 2.39052C13.8595 2.64057 14 2.97971 14 3.33333V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H10M6.66667 4.66667L10 8L6.66667 11.3333M10 8H2" 
+      stroke="#99331A" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function LogoutIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6M10.6667 4.66667L14 8L10.6667 11.3333M14 8H6" 
+      stroke="#99331A" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -56,11 +81,12 @@ const mobileNavLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false)
   const pathname = usePathname()
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
-
+  const { user, isLoggedIn } = useAuth()
   const closeMenu = () => setMenuOpen(false)
 
   // Fermer avec Escape
@@ -141,13 +167,15 @@ export default function Header() {
             </div>
 
             {/* Droite */}
-            <nav aria-label="Actions" className="flex items-center justify-end gap-4">
-              <Link
-                href="/logements/ajouter"
-                className="text-main-red text-sm font-medium whitespace-nowrap hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
-              >
-                +Ajouter un logement
-              </Link>
+            <nav aria-label="Actions" className="flex items-center justify-end gap-2">
+              {isLoggedIn && (
+                <Link
+                  href="/logements/ajouter"
+                  className="text-main-red text-sm font-medium whitespace-nowrap hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
+                >
+                  +Ajouter un logement
+                </Link>
+              )}
               <Link
                 href="/favoris"
                 aria-label="Mes favoris"
@@ -157,6 +185,7 @@ export default function Header() {
                 <FavIcon />
               </Link>
               <span aria-hidden="true" className="text-main-red select-none">|</span>
+              {isLoggedIn && (
               <Link
                 href="/messagerie"
                 aria-label="Messagerie"
@@ -165,6 +194,30 @@ export default function Header() {
               >
                 <ChatIcon />
               </Link>
+              )}
+              {isLoggedIn && (
+                <span aria-hidden="true" className="text-main-red select-none">|</span>
+              )}
+              {isLoggedIn && (
+                <button
+                  type="button"
+                  aria-label="Se déconnecter"
+                  onClick={() => setLogoutModalOpen(true)}
+                  className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
+                >
+                  <LogoutIcon />
+                </button>
+              )}
+              {!isLoggedIn && (
+                <Link
+                  href="/login"
+                  aria-label="Se connecter"
+                  aria-current={pathname === "/login" ? "page" : undefined}
+                  className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
+                >
+                  <LoginIcon />
+                </Link>
+              )}
             </nav>
 
           </div>
@@ -245,6 +298,15 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={logoutUser}
+        title="Se déconnecter ?"
+        confirmLabel="Oui"
+        cancelLabel="Non"
+      />
 
     </header>
   )

@@ -5,6 +5,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { FavoritesProvider } from "@/context/FavoritesContext";
+import { decodeTokenPayload } from "@/lib/auth";
+import type { User } from "@/types/user";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -13,18 +15,23 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Kasa",
-  description: "location d’appartements et de maisons entre particuliers",
+  description: "location d'appartements et de maisons entre particuliers",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const payload = await decodeTokenPayload()
+  const initialUser = payload
+    ? ({ id: payload.id, name: payload.name, email: payload.email, picture: null, role: payload.role } as User)
+    : null
+
   return (
     <html lang="fr" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-light-orange font-sans">
-        <AuthProvider>
+        <AuthProvider initialUser={initialUser}>
           <FavoritesProvider>
             <Header />
             <div className="flex-1 flex flex-col w-full max-w-278 mx-auto">

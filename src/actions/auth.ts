@@ -1,9 +1,8 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { loginWithCredentials, setTokenCookie } from '@/lib/auth'
+import { loginWithCredentials, registerWithCredentials, setTokenCookie, deleteTokenCookie } from '@/lib/auth'
 import { ApiError } from '@/lib/api'
-import type { User } from '@/types/user'
 
 export type LoginState = { error: string } | null
 
@@ -24,14 +23,29 @@ export async function loginUser(_prevState: LoginState, formData: FormData): Pro
   redirect(callbackUrl)
 }
 
-// TODO: implémenter registerUser
-/** @throws {ApiError} 409 si l'email est déjà utilisé */
-export async function registerUser(_name: string, _email: string, _password: string): Promise<{ token: string; user: User }> {
-  throw new Error('registerUser — non implémenté')
+export type RegisterState = { error: string } | null
+
+export async function registerUser(_prevState: RegisterState, formData: FormData): Promise<RegisterState> {
+  const firstname = formData.get('firstname') as string
+  const lastname = formData.get('lastname') as string
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const name = `${firstname} ${lastname}`.trim()
+
+  try {
+    const { token } = await registerWithCredentials(name, email, password)
+    await setTokenCookie(token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 409) {
+      return { error: 'Cette adresse email est déjà utilisée' }
+    }
+    return { error: 'Une erreur est survenue, veuillez réessayer' }
+  }
+  redirect('/')
 }
 
-// TODO: implémenter logoutUser
-/** Supprime le cookie `token` côté serveur. */
+/** Supprime le cookie `token` et redirige vers l'accueil. */
 export async function logoutUser(): Promise<void> {
-  throw new Error('logoutUser — non implémenté')
+  await deleteTokenCookie()
+  redirect('/')
 }
