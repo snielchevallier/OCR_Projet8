@@ -6,22 +6,31 @@ import { getProperty } from "@/actions/properties"
 
 type Props = {
   params: Promise<{ idSlug: string }>
+  searchParams: Promise<{ from?: string }>
 }
 
-export default async function PropertyDetailPage({ params }: Props) {
+export default async function PropertyDetailPage({ params, searchParams }: Props) {
   const { idSlug } = await params
+  const { from } = await searchParams
   const id = idSlug.split("--")[0]
   const property = await getProperty(id)
+
+  const allowedRoutes = ["/", "/logements", "/favoris"]
+  const backHref = from && allowedRoutes.includes(from) ? from : "/logements"
+  const backLabel =
+    backHref === "/" ? "Retour à l'accueil"
+    : backHref === "/favoris" ? "Retour aux favoris"
+    : "Retour aux annonces"
 
   return (
     <main>
       <div className="px-4 pt-6 sm:px-8">
         <Link
-          href="/logements"
+          href={backHref}
           className="inline-flex items-center gap-2 rounded-xl bg-grey-light px-4 py-4 text-sm text-grey-dark transition-colors focus-visible:ring-1 focus-visible:ring-main-red"
         >
           <span aria-hidden="true">←</span>
-          Retour aux annonces
+          {backLabel}
         </Link>
       </div>
 

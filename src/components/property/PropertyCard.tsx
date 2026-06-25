@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import type { Property } from "@/types/property"
 import { BLUR_PLACEHOLDER } from "@/lib/image"
 import { useFavorites } from "@/context/FavoritesContext"
@@ -14,6 +15,9 @@ type Props = {
 export default function PropertyCard({ property }: Props) {
   const { isFavorite, toggle } = useFavorites()
   const favorited = isFavorite(property.id)
+  const pathname = usePathname()
+
+  const href = `/logements/${property.id}--${property.slug}?from=${encodeURIComponent(pathname)}`
 
   return (
     <article className="relative h-138 rounded-2xl overflow-hidden bg-white">
@@ -24,7 +28,7 @@ export default function PropertyCard({ property }: Props) {
       />
 
       <Link
-        href={`/logements/${property.id}--${property.slug}`}
+        href={href}
         className="flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
       >
         <div className="relative h-82.5 shrink-0">
