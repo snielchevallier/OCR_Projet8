@@ -287,6 +287,7 @@ export default function Header() {
           </nav>
 
           {/* Bouton Ajouter */}
+          {isLoggedIn && (
           <div className="mt-8">
             <Link
               href="/logements/ajouter"
@@ -296,6 +297,18 @@ export default function Header() {
               Ajouter un logement
             </Link>
           </div>
+          )}
+          {!isLoggedIn && (
+            <div className="mt-8">
+              <Link
+                href="/login"
+                onClick={closeMenu}
+                className="inline-block bg-dark-orange text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-main-red transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-orange"
+              >
+                Se connecter
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
