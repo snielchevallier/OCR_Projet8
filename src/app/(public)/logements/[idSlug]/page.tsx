@@ -1,8 +1,11 @@
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import PropertyGallery from "@/components/property/PropertyGallery"
 import HostCard from "@/components/property/HostCard"
 import TagBadge from "@/components/property/TagBadge"
 import { getProperty } from "@/actions/properties"
+import { ApiError } from "@/lib/api"
+import type { PropertyDetail } from "@/types/property"
 
 type Props = {
   params: Promise<{ idSlug: string }>
@@ -13,7 +16,16 @@ export default async function PropertyDetailPage({ params, searchParams }: Props
   const { idSlug } = await params
   const { from } = await searchParams
   const id = idSlug.split("--")[0]
-  const property = await getProperty(id)
+
+  if (!id) notFound()
+
+  let property: PropertyDetail
+  try {
+    property = await getProperty(id)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) notFound()
+    throw err
+  }
 
   const allowedRoutes = ["/", "/logements", "/favoris"]
   const backHref = from && allowedRoutes.includes(from) ? from : "/logements"
