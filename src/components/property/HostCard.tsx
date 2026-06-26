@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import type { User } from "@/types/user"
 import { BLUR_PLACEHOLDER } from "@/lib/image"
 
@@ -54,12 +55,12 @@ export default function HostCard({ host, rating }: Props) {
         >
           Contacter l&apos;hôte
         </button>
-        <button
-          type="button"
+        <Link
+          href="/messagerie"
           className="w-full rounded-lg bg-main-red py-3 text-center font-medium text-white transition-colors hover:bg-dark-orange focus-visible:ring-2 focus-visible:ring-main-red focus-visible:ring-offset-2"
         >
           Envoyer un message
-        </button>
+        </Link>
       </div>
     </aside>
   )
