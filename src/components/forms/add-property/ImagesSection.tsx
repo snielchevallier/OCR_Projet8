@@ -47,13 +47,10 @@ export default function ImagesSection({ className, onCoverChange, onPicturesChan
           Image de couverture
         </label>
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            readOnly
+          <div
             aria-hidden="true"
-            tabIndex={-1}
             onClick={() => coverRef.current?.click()}
-            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm focus:outline-none"
+            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm min-h-9"
           />
           <PlusButton
             onClick={() => coverRef.current?.click()}
@@ -86,13 +83,10 @@ export default function ImagesSection({ className, onCoverChange, onPicturesChan
           Image du logement
         </label>
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            readOnly
+          <div
             aria-hidden="true"
-            tabIndex={-1}
             onClick={() => addPicRef.current?.click()}
-            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm focus:outline-none"
+            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm min-h-9"
           />
           <PlusButton
             onClick={() => addPicRef.current?.click()}

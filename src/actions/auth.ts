@@ -6,10 +6,15 @@ import { ApiError } from '@/lib/api'
 
 export type LoginState = { error: string } | null
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export async function loginUser(_prevState: LoginState, formData: FormData): Promise<LoginState> {
-  const email = formData.get('email') as string
+  const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
   const callbackUrl = (formData.get('callbackUrl') as string) || '/'
+
+  if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
+  if (!password) return { error: 'Mot de passe requis' }
 
   try {
     const { token } = await loginWithCredentials(email, password)
@@ -26,11 +31,18 @@ export async function loginUser(_prevState: LoginState, formData: FormData): Pro
 export type RegisterState = { error: string } | null
 
 export async function registerUser(_prevState: RegisterState, formData: FormData): Promise<RegisterState> {
-  const firstname = formData.get('firstname') as string
-  const lastname = formData.get('lastname') as string
-  const email = formData.get('email') as string
+  const firstname = (formData.get('firstname') as string)?.trim()
+  const lastname = (formData.get('lastname') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
+  const terms = formData.get('terms')
   const name = `${firstname} ${lastname}`.trim()
+
+  if (!firstname) return { error: 'Prénom requis' }
+  if (!lastname) return { error: 'Nom requis' }
+  if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
+  if (!password || password.length < 8) return { error: 'Le mot de passe doit contenir au moins 8 caractères' }
+  if (terms !== 'on') return { error: "Vous devez accepter les conditions générales d'utilisation" }
 
   try {
     const { token } = await registerWithCredentials(name, email, password)

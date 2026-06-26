@@ -49,13 +49,10 @@ export default function HostSection({ className, onHostPhotoChange }: Props) {
           Photo de profil
         </label>
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            readOnly
+          <div
             aria-hidden="true"
-            tabIndex={-1}
             onClick={() => photoRef.current?.click()}
-            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm focus:outline-none"
+            className="flex-1 cursor-pointer rounded-sm border border-grey-light px-2 py-1.5 text-sm min-h-9"
           />
           <PlusButton
             onClick={() => photoRef.current?.click()}

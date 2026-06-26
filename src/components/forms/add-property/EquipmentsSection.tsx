@@ -17,13 +17,12 @@ const EQUIPMENTS = [
 
 export default function EquipmentsSection({ className }: Props) {
   return (
-    <section
-      aria-labelledby="equipments-heading"
-      className={`rounded-xl bg-white p-6${className ? ` ${className}` : ''}`}
+    <fieldset
+      className={`min-w-0 rounded-xl border-0 bg-white p-6${className ? ` ${className}` : ''}`}
     >
-      <h2 id="equipments-heading" className="mb-4 text-base font-semibold text-black">
+      <legend className="mb-4 block text-base font-semibold text-black">
         Équipements
-      </h2>
+      </legend>
       <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
         {EQUIPMENTS.map((equipment) => {
           const id = `equipment-${equipment.toLowerCase().replace(/[\s'àâéèêëîïôùûüç]/g, (c) =>
@@ -45,6 +44,6 @@ export default function EquipmentsSection({ className }: Props) {
           )
         })}
       </ul>
-    </section>
+    </fieldset>
   )
 }
