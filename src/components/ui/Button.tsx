@@ -15,7 +15,7 @@ const variants: Record<Variant, string> = {
   ghost:     "text-main-red hover:underline",
 }
 
-const base = "inline-flex items-center justify-center px-8 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
+const base = "cursor-pointer inline-flex items-center justify-center px-8 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-red"
 
 export default function Button({ variant = "primary", href, children, className, ...props }: Props) {
   const cls = `${base} ${variants[variant]}${className ? ` ${className}` : ""}`
