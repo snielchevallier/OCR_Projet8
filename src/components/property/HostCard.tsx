@@ -26,7 +26,11 @@ export default function HostCard({ host, rating }: Props) {
               blurDataURL={BLUR_PLACEHOLDER}
             />
           ) : (
-            <div className="size-full bg-grey-dark" aria-hidden="true" />
+            <div className="size-full bg-grey-dark flex items-center justify-center" aria-hidden="true">
+              <span className="text-xl font-semibold text-white select-none">
+                {host.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
           )}
         </div>
 
