@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 const PROTECTED_ROUTES = ['/messagerie', '/logements/ajouter']
 const AUTH_ROUTES = ['/login', '/signin']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('token')?.value
 

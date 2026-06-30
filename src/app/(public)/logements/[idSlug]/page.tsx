@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import PropertyGallery from "@/components/property/PropertyGallery"
@@ -10,6 +11,25 @@ import type { PropertyDetail } from "@/types/property"
 type Props = {
   params: Promise<{ idSlug: string }>
   searchParams: Promise<{ from?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { idSlug } = await params
+  const id = idSlug.split("--")[0]
+  try {
+    const property = await getProperty(id)
+    return {
+      title: `${property.title} – Kasa`,
+      description: property.description.slice(0, 155),
+      openGraph: {
+        title: property.title,
+        description: property.description.slice(0, 155),
+        images: [property.cover],
+      },
+    }
+  } catch {
+    return { title: "Logement – Kasa" }
+  }
 }
 
 export default async function PropertyDetailPage({ params, searchParams }: Props) {
@@ -119,6 +139,29 @@ export default async function PropertyDetailPage({ params, searchParams }: Props
 
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LodgingBusiness",
+            "name": property.title,
+            "description": property.description,
+            "image": property.pictures,
+            "address": property.location,
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": property.rating_avg,
+              "reviewCount": property.ratings_count,
+            },
+            "owner": {
+              "@type": "Person",
+              "name": property.host.name,
+              "image": property.host.picture ?? undefined,
+            },
+          }),
+        }}
+      />
     </main>
   )
 }

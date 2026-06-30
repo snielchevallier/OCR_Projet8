@@ -1,6 +1,10 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
-import HeroSection from "@/components/home/HeroSection"
-import HowItWorks from "@/components/home/HowItWorks"
+
+export const metadata: Metadata = {
+  title: "Tous les logements – Kasa",
+  description: "Parcourez notre sélection d'appartements et de maisons à louer entre particuliers partout en France.",
+}
 import PropertyGrid from "@/components/property/PropertyGrid"
 import Spinner from "@/components/ui/Spinner"
 import { getProperties } from "@/actions/properties"

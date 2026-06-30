@@ -1,4 +1,10 @@
+import type { Metadata } from "next"
 import Image from "next/image"
+
+export const metadata: Metadata = {
+  title: "À propos – Kasa",
+  description: "Découvrez la mission de Kasa : mettre en relation des voyageurs avec des hôtes passionnés qui partagent leur région.",
+}
 import PageHero from "@/components/ui/PageHero"
 
 export default function AboutPage() {
