@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation'
 import { loginWithCredentials, registerWithCredentials, setTokenCookie, deleteTokenCookie } from '@/lib/auth'
 import { ApiError } from '@/lib/api'
 
+const MOCK_EMAIL = 'syl@example.com'
+const MOCK_PASSWORD = 'pwd123'
+
 export type LoginState = { error: string } | null
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -19,6 +22,17 @@ export async function loginUser(_prevState: LoginState, formData: FormData): Pro
 
   if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
   if (!password) return { error: 'Mot de passe requis' }
+
+  if (process.env.USE_MOCK_DATA === 'true') {
+    if (email !== MOCK_EMAIL || password !== MOCK_PASSWORD) {
+      return { error: 'Email ou mot de passe incorrect' }
+    }
+    const { MOCK_USER } = await import('@/lib/mock-data')
+    const payload = Buffer.from(JSON.stringify(MOCK_USER)).toString('base64url')
+    const fakeToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${payload}.mock`
+    await setTokenCookie(fakeToken)
+    redirect(callbackUrl)
+  }
 
   try {
     const { token } = await loginWithCredentials(email, password)
@@ -51,6 +65,10 @@ export async function registerUser(_prevState: RegisterState, formData: FormData
   if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
   if (!password || password.length < 8) return { error: 'Le mot de passe doit contenir au moins 8 caractères' }
   if (terms !== 'on') return { error: "Vous devez accepter les conditions générales d'utilisation" }
+
+  if (process.env.USE_MOCK_DATA === 'true') {
+    return { error: `L'inscription n'est pas disponible en mode démo. Connectez-vous avec ${MOCK_EMAIL}.` }
+  }
 
   try {
     const { token } = await registerWithCredentials(name, email, password)
