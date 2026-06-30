@@ -25,6 +25,7 @@ export default function EquipmentsSection({ className }: Props) {
       </legend>
       <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
         {EQUIPMENTS.map((equipment) => {
+          // Translittère les caractères spéciaux pour produire un id HTML valide (ex: "Sèche Cheveux" → "seche-cheveux")
           const id = `equipment-${equipment.toLowerCase().replace(/[\s'àâéèêëîïôùûüç]/g, (c) =>
             ({ ' ': '-', "'": '', à: 'a', â: 'a', é: 'e', è: 'e', ê: 'e', ë: 'e', î: 'i', ï: 'i', ô: 'o', ù: 'u', û: 'u', ü: 'u', ç: 'c' }[c] ?? c)
           )}`

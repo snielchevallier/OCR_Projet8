@@ -23,6 +23,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Hydratation server-side : évite le flash d'état non-connecté au premier rendu client
   const payload = await decodeTokenPayload()
   const initialUser = payload
     ? ({ id: payload.id, name: payload.name, email: payload.email, picture: null, role: payload.role } as User)

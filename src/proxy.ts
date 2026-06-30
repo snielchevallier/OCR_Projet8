@@ -4,6 +4,11 @@ import type { NextRequest } from 'next/server'
 const PROTECTED_ROUTES = ['/messagerie', '/logements/ajouter']
 const AUTH_ROUTES = ['/login', '/signin']
 
+/**
+ * Middleware de routage auth :
+ * - Routes auth (`/login`, `/signin`) → redirige vers `/` si déjà connecté
+ * - Routes protégées (`/messagerie`, `/logements/ajouter`) → redirige vers `/login?callbackUrl=<pathname>` si non connecté
+ */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('token')?.value

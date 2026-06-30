@@ -14,6 +14,7 @@ type Props = {
 export default function PropertyGallery({ pictures, cover, title }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
+  // La cover est incluse dans pictures par l'API — on l'exclut pour éviter la duplication dans la mosaïque
   const smallImages = pictures.filter((p) => p !== cover).slice(0, 4)
 
   const indexInPictures = (img: string) => {

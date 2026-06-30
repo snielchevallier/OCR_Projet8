@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { apiFetch } from './api'
 import type { User } from '@/types/user'
 
+/** @throws {ApiError} 409 si l'email est déjà utilisé */
 export async function registerWithCredentials(name: string, email: string, password: string) {
   return apiFetch<{ token: string; user: User }>('/auth/register', {
     method: 'POST',
@@ -9,6 +10,7 @@ export async function registerWithCredentials(name: string, email: string, passw
   })
 }
 
+/** @throws {ApiError} 401 si les identifiants sont incorrects */
 export async function loginWithCredentials(email: string, password: string) {
   return apiFetch<{ token: string; user: User }>('/auth/login', {
     method: 'POST',
@@ -16,6 +18,10 @@ export async function loginWithCredentials(email: string, password: string) {
   })
 }
 
+/**
+ * Pose le cookie `token` httpOnly, sameSite=lax, 7 jours.
+ * `secure` est activé uniquement en production.
+ */
 export async function setTokenCookie(token: string) {
   const cookieStore = await cookies()
   cookieStore.set('token', token, {
@@ -38,6 +44,7 @@ export async function decodeTokenPayload() {
   const token = cookieStore.get('token')?.value
   if (!token) return null
   try {
+    // JWT utilise le base64 URL-safe (RFC 4648 §5) : -_ → +/ pour le décodage standard
     const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
     return JSON.parse(Buffer.from(b64, 'base64').toString('utf-8'))
   } catch {

@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import PageHero from "@/components/ui/PageHero"
 
 export const metadata: Metadata = {
   title: "À propos – Kasa",
   description: "Découvrez la mission de Kasa : mettre en relation des voyageurs avec des hôtes passionnés qui partagent leur région.",
 }
-import PageHero from "@/components/ui/PageHero"
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001"
 
 export default function AboutPage() {
   return (
@@ -56,6 +58,23 @@ export default function AboutPage() {
           un souvenir inoubliable.
         </p>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "À propos – Kasa",
+            "url": `${BASE_URL}/about`,
+            "mainEntity": {
+              "@type": "Organization",
+              "name": "Kasa",
+              "url": BASE_URL,
+              "description": "Mise en relation de voyageurs avec des hôtes passionnés qui partagent leur région.",
+            },
+          }),
+        }}
+      />
     </main>
   )
 }

@@ -20,6 +20,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) setFavoriteIds(JSON.parse(raw))
     } catch {}
+    // localStorage inaccessible en navigation privée ou si le JSON est corrompu — on ignore et repart de zéro
   }, [])
 
   const isFavorite = useCallback(
@@ -35,6 +36,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
       } catch {}
+      // localStorage inaccessible (navigation privée) ou quota dépassé — l'état reste en mémoire
       return next
     })
   }, [])

@@ -8,6 +8,10 @@ export type LoginState = { error: string } | null
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+/**
+ * @param formData - Champs attendus : `email`, `password`, `callbackUrl` (optionnel)
+ * @returns `LoginState` en cas d'erreur de validation ou d'API. Redirige via `redirect()` en cas de succès — ne retourne jamais null.
+ */
 export async function loginUser(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
@@ -30,6 +34,10 @@ export async function loginUser(_prevState: LoginState, formData: FormData): Pro
 
 export type RegisterState = { error: string } | null
 
+/**
+ * @param formData - Champs attendus : `firstname`, `lastname`, `email`, `password`, `terms` (checkbox `"on"`)
+ * @returns `RegisterState` en cas d'erreur de validation ou d'API. Redirige vers `/` en cas de succès — ne retourne jamais null.
+ */
 export async function registerUser(_prevState: RegisterState, formData: FormData): Promise<RegisterState> {
   const firstname = (formData.get('firstname') as string)?.trim()
   const lastname = (formData.get('lastname') as string)?.trim()
