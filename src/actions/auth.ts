@@ -1,0 +1,89 @@
+'use server'
+
+import { redirect } from 'next/navigation'
+import { loginWithCredentials, registerWithCredentials, setTokenCookie, deleteTokenCookie } from '@/lib/auth'
+import { ApiError } from '@/lib/api'
+
+const MOCK_EMAIL = 'syl@example.com'
+const MOCK_PASSWORD = 'pwd123'
+
+export type LoginState = { error: string } | null
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/**
+ * @param formData - Champs attendus : `email`, `password`, `callbackUrl` (optionnel)
+ * @returns `LoginState` en cas d'erreur de validation ou d'API. Redirige via `redirect()` en cas de succès — ne retourne jamais null.
+ */
+export async function loginUser(_prevState: LoginState, formData: FormData): Promise<LoginState> {
+  const email = (formData.get('email') as string)?.trim()
+  const password = formData.get('password') as string
+  const callbackUrl = (formData.get('callbackUrl') as string) || '/'
+
+  if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
+  if (!password) return { error: 'Mot de passe requis' }
+
+  if (process.env.USE_MOCK_DATA === 'true') {
+    if (email !== MOCK_EMAIL || password !== MOCK_PASSWORD) {
+      return { error: 'Email ou mot de passe incorrect' }
+    }
+    const { MOCK_USER } = await import('@/lib/mock-data')
+    const payload = Buffer.from(JSON.stringify(MOCK_USER)).toString('base64url')
+    const fakeToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${payload}.mock`
+    await setTokenCookie(fakeToken)
+    redirect(callbackUrl)
+  }
+
+  try {
+    const { token } = await loginWithCredentials(email, password)
+    await setTokenCookie(token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) {
+      return { error: 'Email ou mot de passe incorrect' }
+    }
+    return { error: 'Une erreur est survenue, veuillez réessayer' }
+  }
+  redirect(callbackUrl)
+}
+
+export type RegisterState = { error: string } | null
+
+/**
+ * @param formData - Champs attendus : `firstname`, `lastname`, `email`, `password`, `terms` (checkbox `"on"`)
+ * @returns `RegisterState` en cas d'erreur de validation ou d'API. Redirige vers `/` en cas de succès — ne retourne jamais null.
+ */
+export async function registerUser(_prevState: RegisterState, formData: FormData): Promise<RegisterState> {
+  const firstname = (formData.get('firstname') as string)?.trim()
+  const lastname = (formData.get('lastname') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim()
+  const password = formData.get('password') as string
+  const terms = formData.get('terms')
+  const name = `${firstname} ${lastname}`.trim()
+
+  if (!firstname) return { error: 'Prénom requis' }
+  if (!lastname) return { error: 'Nom requis' }
+  if (!email || !EMAIL_REGEX.test(email)) return { error: 'Adresse email invalide' }
+  if (!password || password.length < 8) return { error: 'Le mot de passe doit contenir au moins 8 caractères' }
+  if (terms !== 'on') return { error: "Vous devez accepter les conditions générales d'utilisation" }
+
+  if (process.env.USE_MOCK_DATA === 'true') {
+    return { error: `L'inscription n'est pas disponible en mode démo. Connectez-vous avec ${MOCK_EMAIL}.` }
+  }
+
+  try {
+    const { token } = await registerWithCredentials(name, email, password)
+    await setTokenCookie(token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 409) {
+      return { error: 'Cette adresse email est déjà utilisée' }
+    }
+    return { error: 'Une erreur est survenue, veuillez réessayer' }
+  }
+  redirect('/')
+}
+
+/** Supprime le cookie `token` et redirige vers l'accueil. */
+export async function logoutUser(): Promise<void> {
+  await deleteTokenCookie()
+  redirect('/')
+}
