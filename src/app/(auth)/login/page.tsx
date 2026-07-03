@@ -23,7 +23,7 @@ export default function LoginPage() {
       </section>
       <div className="text-center mb-6 md:mb-8">
         <p className="mt-3 text-sm text-main-red max-w-70 mx-auto md:text-base md:max-w-full">
-          <Link href="/forgot-password" className="text-main-red hover:underline">
+          <Link href="#" className="text-main-red hover:underline">
             Mot de passe oublié
           </Link>
         </p>

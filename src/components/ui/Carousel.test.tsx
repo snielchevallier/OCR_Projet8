@@ -80,6 +80,32 @@ describe('Carousel', () => {
     })
   })
 
+  describe('focus trap', () => {
+    test('Tab depuis le dernier bouton revient au premier', () => {
+      render(<Carousel {...defaultProps} />)
+      const dialog = screen.getByRole('dialog')
+      const closeBtn = screen.getByRole('button', { name: /fermer le carrousel/i })
+      const nextBtn = screen.getByRole('button', { name: /photo suivante/i })
+
+      nextBtn.focus()
+      fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: false })
+
+      expect(document.activeElement).toBe(closeBtn)
+    })
+
+    test('Shift+Tab depuis le premier bouton va au dernier', () => {
+      render(<Carousel {...defaultProps} />)
+      const dialog = screen.getByRole('dialog')
+      const closeBtn = screen.getByRole('button', { name: /fermer le carrousel/i })
+      const nextBtn = screen.getByRole('button', { name: /photo suivante/i })
+
+      closeBtn.focus()
+      fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })
+
+      expect(document.activeElement).toBe(nextBtn)
+    })
+  })
+
   describe('cas limite', () => {
     test('image unique : boutons suivant et précédent absents', () => {
       render(<Carousel {...defaultProps} images={['/img1.jpg']} />)
