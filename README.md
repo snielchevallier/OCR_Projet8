@@ -50,6 +50,8 @@ cp .env.example .env.local
 ```env
 BACKEND_API_URL=http://localhost:3001   # URL de l'API backend
 NEXT_PUBLIC_SITE_URL=http://localhost:3000  # URL publique du site (utilisée pour le sitemap)
+NODE_ENV=development
+USE_MOCK_DATA=false # Utilisation des données mockées
 ```
 
 ---
